@@ -10,7 +10,10 @@ class Handler(FileSystemEventHandler):
 	
 	def on_modified(self, event):
 		for filename in os.listdir(track_folder):		
-			print("?")	
+			suffix = os.path.splitext(filename)[1]
+			if suffix != '.pdf' and suffix != '.doc':				
+				continue
+
 			curr_dir = track_folder + "\\" + filename	
 			new_dir = target_folder + "\\" + filename
 			os.rename(curr_dir, new_dir)
