@@ -4,11 +4,11 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from infi.systray import SysTrayIcon
 
+running = True
 track_folder = "C:\\Users\\notri\\Downloads"
 target_folder = "C:\\Users\\notri\\Desktop\\School"
 
 class Handler(FileSystemEventHandler):
-	
 	def on_modified(self, event):
 		for filename in os.listdir(track_folder):		
 			suffix = os.path.splitext(filename)[1]
@@ -23,22 +23,20 @@ class Handler(FileSystemEventHandler):
 def say_hello(systray):
     print("Hello, World!")
 
-if __name__ == "__main__":
+def quit_program(systray):
+	global running
+	running = False	
+
+if __name__ == "__main__":	
 	observer = Observer()
 	event_handler = Handler()
 
 	menu_options = (("Say Hello", None, say_hello),)
-	systray = SysTrayIcon("icon.ico", "Example tray icon", menu_options)
+	systray = SysTrayIcon("icon.ico", "Example tray icon", menu_options, on_quit=quit_program)
 	systray.start()
 
 	observer.schedule(event_handler, track_folder, recursive=True)
 	observer.start()
-	try:
-		while True:
-			time.sleep(5)
-	except KeyboardInterrupt:
-		observer.stop()
 
-	observer.join()
-
-
+	while running:
+		time.sleep(5)
