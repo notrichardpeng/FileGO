@@ -1,2 +1,2 @@
 # FolderSort
-Script that automatically organizes a folder
+Script that automatically moves files in one folder to another
