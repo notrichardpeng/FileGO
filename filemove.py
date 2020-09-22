@@ -8,6 +8,7 @@ from plyer import notification
 
 
 running = True
+app_name = "File Mover"
 track_folder = "C:\\Users\\notri\\Downloads"
 target_folder = "C:\\Users\\notri\\Desktop\\School"
 check_suffix = ['.pdf', '.doc', '.docx']
@@ -40,7 +41,7 @@ class Handler(FileSystemEventHandler):
 			notification.notify(
 			title='File Moved!',
 			message=str(count) + " files had been moved to its supposed destination!",
-			app_name='File Mover',
+			app_name=app_name,
 			app_icon='icon.ico')
 
 
@@ -52,7 +53,7 @@ if __name__ == "__main__":
 	observer = Observer()
 	event_handler = Handler()
 	
-	systray = SysTrayIcon("icon.ico", "File Mover", None, on_quit=quit_program)
+	systray = SysTrayIcon("icon.ico", app_name, None, on_quit=quit_program)
 	systray.start()
 
 	observer.schedule(event_handler, track_folder, recursive=True)
