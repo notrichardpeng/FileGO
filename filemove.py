@@ -1,11 +1,13 @@
 import time
 import os
+
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from infi.systray import SysTrayIcon
 
+from infi.systray import SysTrayIcon
 from plyer import notification
 
+import gui
 
 running = True
 app_name = "File Mover"
@@ -46,19 +48,30 @@ class Handler(FileSystemEventHandler):
 
 
 def quit_program(systray):
-	global running
-	running = False	
+	print("?")	
+	global running	
+	gui.close_program()			
+	running = False			
+
+def open_window(systray):	
+	gui.open_window()
 
 if __name__ == "__main__":	
 	observer = Observer()
 	event_handler = Handler()
 	
-	systray = SysTrayIcon("icon.ico", app_name, None, on_quit=quit_program)
+	menu_options = (("Open", None, open_window),)
+	systray = SysTrayIcon("icon.ico", app_name, menu_options, on_quit=quit_program)
 	systray.start()
 
 	observer.schedule(event_handler, track_folder, recursive=True)
 	observer.start()
 	event_handler.on_modified(None)
 
+	gui.GUI()
+
+	#TODO: USE systray.end()
 	while running:
 		time.sleep(5)
+		print("a")
+		
