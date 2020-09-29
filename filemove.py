@@ -44,14 +44,18 @@ class Handler(FileSystemEventHandler):
 			title='File Moved!',
 			message=str(count) + " files had been moved to its supposed destination!",
 			app_name=app_name,
-			app_icon='icon.ico')
+			app_icon='icon.ico',
+			timeout=3)			
 
 
-def quit_program(systray):
-	print("?")	
-	global running	
-	gui.close_program()			
-	running = False			
+def quit_program(systray):	
+	stop_running()
+	print("running = " + str(running))				
+	gui.close_program()
+
+def stop_running():
+	global running
+	running = False
 
 def open_window(systray):	
 	gui.open_window()
@@ -62,16 +66,25 @@ if __name__ == "__main__":
 	
 	menu_options = (("Open", None, open_window),)
 	systray = SysTrayIcon("icon.ico", app_name, menu_options, on_quit=quit_program)
-	systray.start()
 
 	observer.schedule(event_handler, track_folder, recursive=True)
 	observer.start()
+	systray.start()
+	
 	event_handler.on_modified(None)
-
 	gui.GUI()
 
-	#TODO: USE systray.end()
-	while running:
-		time.sleep(5)
-		print("a")
+	#TODO: FIND WAY TO SHUT DOWN GUI
+	#print("running is " + str(running))
+
+	#while running:
+		#print("??")
+		#time.sleep(5)
+		
+
+	systray.shutdown()
+	print("okay")
+
+
+#cd Desktop\Programming\Python\FileMover
 		
