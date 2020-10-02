@@ -1,5 +1,6 @@
 import time
 import os
+import sys
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -8,6 +9,8 @@ from infi.systray import SysTrayIcon
 from plyer import notification
 
 import gui
+
+global my_observer
 
 running = True
 app_name = "File Mover"
@@ -47,44 +50,26 @@ class Handler(FileSystemEventHandler):
 			app_icon='icon.ico',
 			timeout=3)			
 
-
-def quit_program(systray):	
-	stop_running()
-	print("running = " + str(running))				
-	gui.close_program()
-
-def stop_running():
-	global running
-	running = False
+def force_quit(systray):	
+	sys.exit(0)
 
 def open_window(systray):	
 	gui.open_window()
 
 if __name__ == "__main__":	
-	observer = Observer()
+	global my_observer
+	my_observer = Observer()
 	event_handler = Handler()
 	
 	menu_options = (("Open", None, open_window),)
-	systray = SysTrayIcon("icon.ico", app_name, menu_options, on_quit=quit_program)
+	systray = SysTrayIcon("icon.ico", app_name, menu_options, on_quit=force_quit)
 
-	observer.schedule(event_handler, track_folder, recursive=True)
-	observer.start()
+	my_observer.schedule(event_handler, track_folder, recursive=True)
+	my_observer.start()
 	systray.start()
 	
 	event_handler.on_modified(None)
 	gui.GUI()
-
-	#TODO: FIND WAY TO SHUT DOWN GUI
-	#print("running is " + str(running))
-
-	#while running:
-		#print("??")
-		#time.sleep(5)
-		
-
-	systray.shutdown()
-	print("okay")
-
 
 #cd Desktop\Programming\Python\FileMover
 		
