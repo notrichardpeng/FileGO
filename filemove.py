@@ -14,21 +14,19 @@ global my_observer
 
 running = True
 app_name = "File Mover"
-track_folder = "C:\\Users\\notri\\Downloads"
-target_folder = "C:\\Users\\notri\\Desktop\\School"
 check_suffix = ['.pdf', '.doc', '.docx']
 
 
 class Handler(FileSystemEventHandler):
 	def on_modified(self, event):
 		count = 0
-		for filename in os.listdir(track_folder):		
+		for filename in os.listdir(gui.track_folder):		
 			suffix = os.path.splitext(filename)[1]
 			if suffix not in check_suffix:				
 				continue
 
-			curr_dir = track_folder + "\\" + filename	
-			new_dir = target_folder + "\\" + filename
+			curr_dir = gui.track_folder + "\\" + filename	
+			new_dir = gui.target_folder + "\\" + filename
 
 			name_exists = True
 			while name_exists:
@@ -36,7 +34,7 @@ class Handler(FileSystemEventHandler):
 					os.rename(curr_dir, new_dir)						
 				except FileExistsError:					
 					filename = filename[:len(filename)-len(suffix)] + '1' + suffix
-					new_dir = target_folder + "\\" + filename
+					new_dir = gui.target_folder + "\\" + filename
 				else:
 					name_exists = False
 
@@ -64,7 +62,7 @@ if __name__ == "__main__":
 	menu_options = (("Open", None, open_window),)
 	systray = SysTrayIcon("icon.ico", app_name, menu_options, on_quit=force_quit)
 
-	my_observer.schedule(event_handler, track_folder, recursive=True)
+	my_observer.schedule(event_handler, gui.track_folder, recursive=True)
 	my_observer.start()
 	systray.start()
 	
