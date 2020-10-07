@@ -4,6 +4,8 @@ app_name = 'File Mover'
 
 track_folder = "C:\\Users\\notri\\Downloads"
 target_folder = "C:\\Users\\notri\\Desktop\\School"	
+track_str_var = None
+target_str_var = None
 
 root = None
 
@@ -13,16 +15,23 @@ def open_window():
 def on_close():	
 	root.withdraw()	
 
+def on_apply(*args):
+	print("okay")
+
 def GUI():
-	global root
+	global root, track_str_var, target_str_var
 	root = tkinter.Tk()
 	root.withdraw()
 	root.geometry('400x420')
 	root.title(app_name)
-	root.iconbitmap('icon.ico')
+	root.iconbitmap('icon.ico')	
 
 	track_str_var = tkinter.StringVar()
 	target_str_var = tkinter.StringVar()
+	track_str_var.set(track_folder)
+	target_str_var.set(target_folder)
+	track_str_var.trace('w', on_apply)
+	target_str_var.trace('w', on_apply)
 
 	my_frame = tkinter.Frame(root, bd=2, relief=tkinter.GROOVE)
 	track_entry = tkinter.Entry(my_frame, textvariable=track_str_var)
@@ -43,6 +52,9 @@ def GUI():
 	target_entry.pack(pady=5)	
 	my_frame.pack(anchor=tkinter.NW, fill=tkinter.X)
 	
+	confirm_setting = tkinter.Button(root, text="Apply", command=on_apply)
+	confirm_setting.pack()
+
 	root.protocol("WM_DELETE_WINDOW", on_close)
 	root.mainloop()
 

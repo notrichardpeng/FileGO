@@ -48,11 +48,11 @@ class Handler(FileSystemEventHandler):
 			app_icon='icon.ico',
 			timeout=3)			
 
-def force_quit(systray):	
+def force_quit(systray):
 	sys.exit(0)
 
 def open_window(systray):	
-	gui.open_window()
+	gui.open_window()	
 
 if __name__ == "__main__":	
 	global my_observer
@@ -61,10 +61,10 @@ if __name__ == "__main__":
 	
 	menu_options = (("Open", None, open_window),)
 	systray = SysTrayIcon("icon.ico", app_name, menu_options, on_quit=force_quit)
+	systray.start()
 
 	my_observer.schedule(event_handler, gui.track_folder, recursive=True)
 	my_observer.start()
-	systray.start()
 	
 	event_handler.on_modified(None)
 	gui.GUI()
