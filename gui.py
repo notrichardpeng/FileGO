@@ -1,4 +1,7 @@
+import sys
 import tkinter
+
+global root
 
 app_name = 'File Mover'
 
@@ -9,6 +12,10 @@ target_str_var = None
 
 root = None
 
+def force_quit():
+	root.quit()
+	root.destroy()
+
 def open_window():
 	root.deiconify()
 
@@ -16,7 +23,12 @@ def on_close():
 	root.withdraw()	
 
 def on_apply(*args):
-	print("okay")
+	global track_folder, target_folder
+	track_folder = track_str_var.get()
+	target_folder = target_str_var.get()
+	print(track_folder)
+	print(target_folder)
+	print("---")
 
 def GUI():
 	global root, track_str_var, target_str_var
@@ -30,22 +42,13 @@ def GUI():
 	target_str_var = tkinter.StringVar()
 	track_str_var.set(track_folder)
 	target_str_var.set(target_folder)
-	track_str_var.trace('w', on_apply)
-	target_str_var.trace('w', on_apply)
 
 	my_frame = tkinter.Frame(root, bd=2, relief=tkinter.GROOVE)
 	track_entry = tkinter.Entry(my_frame, textvariable=track_str_var)
 	target_entry = tkinter.Entry(my_frame, textvariable=target_str_var)
 	track_label = tkinter.Label(my_frame, text="Folder to observe change and extract from:")
 	target_label = tkinter.Label(my_frame, text="Folder to put the files in: ")
-
-	"""
-	task_a_title = tkinter.Label(task_a, text="Task A")
-	task_a_edit_button = tkinter.Button(task_a, text="Edit")
-	task_a_title.pack(side=tkinter.LEFT)
-	task_a_edit_button.pack(side=tkinter.RIGHT)
-	"""
-
+	
 	track_label.pack()
 	track_entry.pack(pady=5)
 	target_label.pack()	
