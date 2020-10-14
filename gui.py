@@ -1,7 +1,15 @@
 import sys
+import threading
+
 import tkinter
 
-global root
+from pystray import Icon, Menu, MenuItem
+from PIL import Image
+
+import filemove
+
+
+global root, systray
 
 app_name = 'File Mover'
 
@@ -12,15 +20,23 @@ target_str_var = None
 
 root = None
 
-def force_quit():
-	root.quit()
-	root.destroy()
+def quit_program():		
+	systray.stop()
+	root.destroy()				
 
 def open_window():
-	root.deiconify()
+	systray.stop()
+	root.after(0, root.deiconify)
 
-def on_close():	
+def on_close():		
+	print("withdrawn")
 	root.withdraw()	
+
+	global systray
+
+	my_menu = Menu(MenuItem("Open", open_window), MenuItem("Quit", quit_program))
+	systray = Icon('File Mover', Image.open("icon.ico"), menu=my_menu)		
+	systray.run()	
 
 def on_apply(*args):
 	global track_folder, target_folder
@@ -32,8 +48,7 @@ def on_apply(*args):
 
 def GUI():
 	global root, track_str_var, target_str_var
-	root = tkinter.Tk()
-	root.withdraw()
+	root = tkinter.Tk()	
 	root.geometry('400x420')
 	root.title(app_name)
 	root.iconbitmap('icon.ico')	
@@ -58,7 +73,18 @@ def GUI():
 	confirm_setting = tkinter.Button(root, text="Apply", command=on_apply)
 	confirm_setting.pack()
 
-	root.protocol("WM_DELETE_WINDOW", on_close)
-	root.mainloop()
+	root.protocol("WM_DELETE_WINDOW", on_close)			
+	root.mainloop()		
+
+
+if __name__ == "__main__":
+	"""
+	menu_options = (("Open", None, open_window),)
+	systray = SysTrayIcon("icon.ico", app_name, menu_options, on_quit=quit_program)
+	systray.start()
+	"""	
+	GUI()		
+	
 
 #cd Desktop\Programming\Python\FileMover
+#Desktop\Programming\Python\FileMover\gui.py

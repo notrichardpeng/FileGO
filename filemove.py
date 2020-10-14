@@ -1,3 +1,4 @@
+"""
 import time
 import os
 import sys
@@ -70,7 +71,8 @@ def observer_init():
 	my_observer.start()
 	
 
-if __name__ == "__main__":		
+if __name__ == "__main__":	
+	print("filemove running")	
 	event_handler = Handler()
 	
 	menu_options = (("Open", None, open_window),)
@@ -84,7 +86,7 @@ if __name__ == "__main__":
 	event_handler.on_modified(None)
 
 	#TODO: USE GUI AS MAIN CODE, TKINTER CANNOT BE THREADED
-"""
+
 	t = threading.Thread(target=gui.GUI)
 	t.setDaemon(True)
 	t.start()
