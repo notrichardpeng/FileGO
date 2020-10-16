@@ -1,4 +1,5 @@
 import sys
+import os
 import threading
 
 import tkinter
@@ -7,7 +8,6 @@ from pystray import Icon, Menu, MenuItem
 from PIL import Image
 
 import filemove
-
 
 global root, systray
 
@@ -35,7 +35,7 @@ def on_close():
 	global systray
 
 	my_menu = Menu(MenuItem("Open", open_window), MenuItem("Quit", quit_program))
-	systray = Icon('File Mover', Image.open("icon.ico"), menu=my_menu)		
+	systray = Icon('File Mover', Image.open(sys.path[0] + "\\icon.ico"), menu=my_menu)		
 	systray.run()	
 
 def on_apply(*args):
@@ -51,7 +51,7 @@ def GUI():
 	root = tkinter.Tk()	
 	root.geometry('400x420')
 	root.title(app_name)
-	root.iconbitmap('icon.ico')	
+	root.iconbitmap(sys.path[0] + "\\icon.ico")	
 
 	track_str_var = tkinter.StringVar()
 	target_str_var = tkinter.StringVar()
@@ -78,11 +78,9 @@ def GUI():
 
 
 if __name__ == "__main__":
-	"""
-	menu_options = (("Open", None, open_window),)
-	systray = SysTrayIcon("icon.ico", app_name, menu_options, on_quit=quit_program)
-	systray.start()
-	"""	
+	my_observer = filemove.MyObserver()
+	my_observer.set_path(track_folder, target_folder)
+	
 	GUI()		
 	
 
