@@ -5,6 +5,7 @@ import threading
 import tkinter
 
 from pystray import Icon, Menu, MenuItem
+from plyer import notification
 from PIL import Image
 
 import filemove
@@ -35,8 +36,9 @@ def on_close():
 	global systray
 
 	my_menu = Menu(MenuItem("Open", open_window), MenuItem("Quit", quit_program))
-	systray = Icon('File Mover', Image.open(sys.path[0] + "\\icon.ico"), menu=my_menu)		
-	systray.run()	
+	systray = Icon('File Mover', Image.open(sys.path[0] + "\\icon.ico"), menu=my_menu)																
+	systray.run()		
+
 
 def on_apply(*args):
 	global track_folder, target_folder
@@ -46,12 +48,21 @@ def on_apply(*args):
 	print(target_folder)
 	print("---")
 
+def notify(count):	
+	notification.notify(
+		title = "File Mover",
+		message = str(count) + " files has been successfully moved!",
+		timeout = 3,
+		app_icon = sys.path[0] + "\\icon.ico",
+		app_name = app_name
+	)
+
 def GUI():
 	global root, track_str_var, target_str_var
 	root = tkinter.Tk()	
 	root.geometry('400x420')
 	root.title(app_name)
-	root.iconbitmap(sys.path[0] + "\\icon.ico")	
+	root.iconbitmap(sys.path[0] + "\\icon.ico")		
 
 	track_str_var = tkinter.StringVar()
 	target_str_var = tkinter.StringVar()
@@ -73,16 +84,15 @@ def GUI():
 	confirm_setting = tkinter.Button(root, text="Apply", command=on_apply)
 	confirm_setting.pack()
 
-	root.protocol("WM_DELETE_WINDOW", on_close)			
+	root.protocol("WM_DELETE_WINDOW", on_close)				
 	root.mainloop()		
-
 
 if __name__ == "__main__":
 	my_observer = filemove.MyObserver()
 	my_observer.set_path(track_folder, target_folder)
-	
+	my_observer.set_notification(notify)
+
 	GUI()		
 	
-
 #cd Desktop\Programming\Python\FileMover
 #Desktop\Programming\Python\FileMover\gui.py

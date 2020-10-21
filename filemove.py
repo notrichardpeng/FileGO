@@ -5,9 +5,6 @@ import threading
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-from plyer import notification
-
-
 check_suffix = ['.pdf', '.doc', '.docx']
 
 class Handler(FileSystemEventHandler):
@@ -15,6 +12,9 @@ class Handler(FileSystemEventHandler):
 	def __init__(self):
 		self.track_folder = ""
 		self.target_folder = ""
+
+	def set_notification(self, func):
+		self.notify_callback = func
 
 	def on_modified(self, event):		
 		count = 0
@@ -39,7 +39,7 @@ class Handler(FileSystemEventHandler):
 			count += 1
 
 		if count > 0:
-			print("YES!")		
+			self.notify_callback(count)
 	
 
 class MyObserver:
@@ -54,6 +54,9 @@ class MyObserver:
 		self.observer.unschedule_all()
 		self.observer.schedule(self.event_handler, track)
 		self.observer.start()
+
+	def set_notification(self, func):
+		self.event_handler.set_notification(func)
 
 
 #cd Desktop\Programming\Python\FileMover
