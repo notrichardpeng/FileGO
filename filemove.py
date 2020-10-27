@@ -58,6 +58,10 @@ class MyObserver:
 	def set_notification(self, func):
 		self.event_handler.set_notification(func)
 
+	#auto check folder at start of program
+	def check(self):
+		self.event_handler.on_modified(None)
+
 
 #cd Desktop\Programming\Python\FileMover
 		

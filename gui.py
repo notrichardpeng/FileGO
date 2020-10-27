@@ -16,8 +16,6 @@ app_name = 'File Mover'
 
 track_folder = "C:\\Users\\notri\\Downloads"
 target_folder = "C:\\Users\\notri\\Desktop\\School"	
-track_str_var = None
-target_str_var = None
 
 root = None
 
@@ -40,13 +38,8 @@ def on_close():
 	systray.run()		
 
 
-def on_apply(*args):
-	global track_folder, target_folder
-	track_folder = track_str_var.get()
-	target_folder = target_str_var.get()
-	print(track_folder)
-	print(target_folder)
-	print("---")
+def on_apply_dest():
+	pass
 
 def notify(count):	
 	notification.notify(
@@ -57,31 +50,47 @@ def notify(count):
 		app_name = app_name
 	)
 
+def browse_directory(mode):
+	pass
+
+def create_directory_settings(main_frame):
+	#track
+	track_label = tkinter.Label(main_frame, text="Folder to observe change and extract from:")
+	track_frame = tkinter.Frame(main_frame)
+	track_display = tkinter.Label(track_frame, text=track_folder, width=32, bd=2, relief=tkinter.SUNKEN, 
+		anchor=tkinter.W)
+	track_browse = tkinter.Button(track_frame, command=lambda: browse_directory('track'), text='Browse')
+
+	track_display.pack(padx=5, side=tkinter.LEFT)
+	track_browse.pack(padx=5, side=tkinter.LEFT)	
+	track_label.pack()
+	track_frame.pack(pady=5)	
+
+	#target
+	target_frame = tkinter.Frame(main_frame)
+	target_label = tkinter.Label(main_frame, text="Folder to put the files in: ")
+	target_display = tkinter.Label(target_frame, text=target_folder, width=32, bd=2, relief=tkinter.SUNKEN,
+		anchor=tkinter.W)
+	target_browse = tkinter.Button(target_frame, command=lambda: browse_directory('target'), text='Browse')	
+	
+	target_display.pack(padx=5, side=tkinter.LEFT)
+	target_browse.pack(padx=5, side=tkinter.LEFT)
+
+	target_label.pack()	
+	target_frame.pack(pady=5)	
+
 def GUI():
 	global root, track_str_var, target_str_var
 	root = tkinter.Tk()	
 	root.geometry('400x420')
 	root.title(app_name)
-	root.iconbitmap(sys.path[0] + "\\icon.ico")		
+	root.iconbitmap(sys.path[0] + "\\icon.ico")			
 
-	track_str_var = tkinter.StringVar()
-	target_str_var = tkinter.StringVar()
-	track_str_var.set(track_folder)
-	target_str_var.set(target_folder)
-
-	my_frame = tkinter.Frame(root, bd=2, relief=tkinter.GROOVE)
-	track_entry = tkinter.Entry(my_frame, textvariable=track_str_var)
-	target_entry = tkinter.Entry(my_frame, textvariable=target_str_var)
-	track_label = tkinter.Label(my_frame, text="Folder to observe change and extract from:")
-	target_label = tkinter.Label(my_frame, text="Folder to put the files in: ")
+	main_frame = tkinter.Frame(root, bd=2, relief=tkinter.GROOVE)
+	create_directory_settings(main_frame)
+	main_frame.pack(anchor=tkinter.NW, fill=tkinter.X)
 	
-	track_label.pack()
-	track_entry.pack(pady=5)
-	target_label.pack()	
-	target_entry.pack(pady=5)	
-	my_frame.pack(anchor=tkinter.NW, fill=tkinter.X)
-	
-	confirm_setting = tkinter.Button(root, text="Apply", command=on_apply)
+	confirm_setting = tkinter.Button(root, text="Apply", command=on_apply_dest)
 	confirm_setting.pack()
 
 	root.protocol("WM_DELETE_WINDOW", on_close)				
@@ -91,8 +100,10 @@ if __name__ == "__main__":
 	my_observer = filemove.MyObserver()
 	my_observer.set_path(track_folder, target_folder)
 	my_observer.set_notification(notify)
+	my_observer.check()
 
 	GUI()		
 	
 #cd Desktop\Programming\Python\FileMover
 #Desktop\Programming\Python\FileMover\gui.py
+
