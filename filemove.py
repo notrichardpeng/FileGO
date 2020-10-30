@@ -47,13 +47,17 @@ class MyObserver:
 	def __init__(self):
 		self.event_handler = Handler()
 		self.observer = Observer()
+		self.started = False
 
 	def set_path(self, track, target):
-		self.event_handler.track_folder = track
-		self.event_handler.target_folder = target
 		self.observer.unschedule_all()
+		self.event_handler.track_folder = track
+		self.event_handler.target_folder = target		
 		self.observer.schedule(self.event_handler, track)
+
+		if self.started: return
 		self.observer.start()
+		self.started = True
 
 	def set_notification(self, func):
 		self.event_handler.set_notification(func)

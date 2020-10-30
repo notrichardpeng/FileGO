@@ -1,8 +1,8 @@
 import sys
 import os
-import threading
 
 import tkinter
+from tkinter import filedialog
 
 from pystray import Icon, Menu, MenuItem
 from plyer import notification
@@ -10,14 +10,34 @@ from PIL import Image
 
 import filemove
 
-global root, systray
+global root, systray, track_display, target_display
 
 app_name = 'File Mover'
 
-track_folder = "C:\\Users\\notri\\Downloads"
-target_folder = "C:\\Users\\notri\\Desktop\\School"	
+track_folder = "C:/Users/notri/Downloads"
+target_folder = "C:/Users/notri/Desktop/School"	
 
 root = None
+
+#Button functions--------------------------------------------------------------------------------------------
+
+def browse_directory(mode):
+	path = filedialog.askdirectory()
+	if mode == 'track':
+		global track_folder
+		track_folder = path
+		print("track changed")
+		track_display.config(text=path)
+	elif mode == 'target':
+		global target_folder
+		target_folder = path
+		print("target chanegd")
+		target_display.config(text=path)
+
+def on_apply_dest():
+	my_observer.set_path(track_folder, target_folder)
+
+#Callbacks--------------------------------------------------------------------------------------------
 
 def quit_program():		
 	systray.stop()
@@ -37,10 +57,6 @@ def on_close():
 	systray = Icon('File Mover', Image.open(sys.path[0] + "\\icon.ico"), menu=my_menu)																
 	systray.run()		
 
-
-def on_apply_dest():
-	pass
-
 def notify(count):	
 	notification.notify(
 		title = "File Mover",
@@ -50,10 +66,11 @@ def notify(count):
 		app_name = app_name
 	)
 
-def browse_directory(mode):
-	pass
+#GUI--------------------------------------------------------------------------------------------
 
 def create_directory_settings(main_frame):
+	global track_display, target_display
+
 	#track
 	track_label = tkinter.Label(main_frame, text="Folder to observe change and extract from:")
 	track_frame = tkinter.Frame(main_frame)
