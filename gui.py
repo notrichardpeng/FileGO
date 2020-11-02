@@ -37,6 +37,13 @@ def browse_directory(mode):
 def on_apply_dest():
 	my_observer.set_path(track_folder, target_folder)
 
+def add_suffix(listbox, entry):
+	print(listbox)
+	print(entry.get())
+
+def del_suffix(listbox):
+	pass
+
 #Callbacks--------------------------------------------------------------------------------------------
 
 def quit_program():		
@@ -47,8 +54,7 @@ def open_window():
 	systray.stop()
 	root.after(0, root.deiconify)
 
-def on_close():		
-	print("withdrawn")
+def on_close():			
 	root.withdraw()	
 
 	global systray
@@ -96,19 +102,51 @@ def create_directory_settings(main_frame):
 	target_label.pack()	
 	target_frame.pack(pady=5)	
 
+def create_list_of_suffixes(main_frame):
+	suffix_label = tkinter.Label(main_frame, text="Suffixes of files to check for:")
+	suffix_label.pack()
+
+	suffix_frame = tkinter.Frame(main_frame)
+	suffix = tkinter.Listbox(suffix_frame, height=10, width=15)
+	suffix.insert(1, '.pdf')
+	suffix.insert(2, '.doc')
+	suffix.insert(3, '.docx')
+
+	suffix_edit_frame = tkinter.Frame(suffix_frame)
+
+	suffix_insert = tkinter.Entry(suffix_edit_frame, width=8)	
+	add_button = tkinter.Button(suffix_edit_frame, text='Add', 
+		command=lambda: add_suffix(suffix, suffix_insert))
+	delete_button = tkinter.Button(suffix_edit_frame, text='Delete', command=lambda: del_suffix(suffix))
+
+	suffix_insert.pack(pady=5)
+	add_button.pack(pady=5)
+	delete_button.pack(pady=5)
+
+	suffix.pack(padx=5, side=tkinter.LEFT)
+	suffix_edit_frame.pack(padx=5, side=tkinter.LEFT)
+
+	suffix_frame.pack(pady=5)
+
 def GUI():
 	global root, track_str_var, target_str_var
 	root = tkinter.Tk()	
-	root.geometry('400x420')
+	root.geometry('400x450')
 	root.title(app_name)
 	root.iconbitmap(sys.path[0] + "\\icon.ico")			
 
 	main_frame = tkinter.Frame(root, bd=2, relief=tkinter.GROOVE)
 	create_directory_settings(main_frame)
+	create_list_of_suffixes(main_frame)
+
 	main_frame.pack(anchor=tkinter.NW, fill=tkinter.X)
 	
 	confirm_setting = tkinter.Button(root, text="Apply", command=on_apply_dest)
-	confirm_setting.pack()
+	confirm_setting.pack(pady=5)
+
+	working_text = tkinter.Label(root, text="checking for files to be moved...", 
+		font="Helvetica 13 italic")
+	working_text.pack(pady=5)
 
 	root.protocol("WM_DELETE_WINDOW", on_close)				
 	root.mainloop()		

@@ -55,9 +55,13 @@ class MyObserver:
 		self.event_handler.target_folder = target		
 		self.observer.schedule(self.event_handler, track)
 
-		if self.started: return
-		self.observer.start()
-		self.started = True
+		if self.started: 
+			self.event_handler.on_modified(None)
+			return
+		else:
+			self.observer.start()
+			self.started = True
+			self.event_handler.on_modified(None)
 
 	def set_notification(self, func):
 		self.event_handler.set_notification(func)
