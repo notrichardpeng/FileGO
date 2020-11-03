@@ -34,15 +34,22 @@ def browse_directory(mode):
 		print("target chanegd")
 		target_display.config(text=path)
 
-def on_apply_dest():
-	my_observer.set_path(track_folder, target_folder)
+def on_apply(lb):
+	my_observer.pause()
+	my_observer.set_suffixes(lb.get(0, 'end'))
+	my_observer.set_path(track_folder, target_folder)	
 
 def add_suffix(listbox, entry):
-	print(listbox)
-	print(entry.get())
+	s = entry.get()
+	listbox.insert('end', s)
+	entry.delete(0, 'end')
 
 def del_suffix(listbox):
-	pass
+	items = listbox.curselection()
+	if len(items) == 0: return
+	items = reversed(items)
+	for c in items:
+		listbox.delete(int(c))
 
 #Callbacks--------------------------------------------------------------------------------------------
 
@@ -107,10 +114,10 @@ def create_list_of_suffixes(main_frame):
 	suffix_label.pack()
 
 	suffix_frame = tkinter.Frame(main_frame)
-	suffix = tkinter.Listbox(suffix_frame, height=10, width=15)
-	suffix.insert(1, '.pdf')
-	suffix.insert(2, '.doc')
-	suffix.insert(3, '.docx')
+	suffix = tkinter.Listbox(suffix_frame, height=10, width=15, selectmode='extended')
+	suffix.insert(1, 'pdf')
+	suffix.insert(2, 'doc')
+	suffix.insert(3, 'docx')
 
 	suffix_edit_frame = tkinter.Frame(suffix_frame)
 
@@ -127,6 +134,7 @@ def create_list_of_suffixes(main_frame):
 	suffix_edit_frame.pack(padx=5, side=tkinter.LEFT)
 
 	suffix_frame.pack(pady=5)
+	return suffix
 
 def GUI():
 	global root, track_str_var, target_str_var
@@ -137,11 +145,12 @@ def GUI():
 
 	main_frame = tkinter.Frame(root, bd=2, relief=tkinter.GROOVE)
 	create_directory_settings(main_frame)
-	create_list_of_suffixes(main_frame)
+	suffix_lb = create_list_of_suffixes(main_frame)
 
 	main_frame.pack(anchor=tkinter.NW, fill=tkinter.X)
 	
-	confirm_setting = tkinter.Button(root, text="Apply", command=on_apply_dest)
+	confirm_setting = tkinter.Button(root, text="Apply", 
+		command=lambda: on_apply(suffix_lb))
 	confirm_setting.pack(pady=5)
 
 	working_text = tkinter.Label(root, text="checking for files to be moved...", 
@@ -153,12 +162,11 @@ def GUI():
 
 if __name__ == "__main__":
 	my_observer = filemove.MyObserver()
-	my_observer.set_path(track_folder, target_folder)
 	my_observer.set_notification(notify)
+	my_observer.set_path(track_folder, target_folder)	
 	my_observer.check()
 
 	GUI()		
 	
 #cd Desktop\Programming\Python\FileMover
-#Desktop\Programming\Python\FileMover\gui.py
 

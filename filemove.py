@@ -49,8 +49,10 @@ class MyObserver:
 		self.observer = Observer()
 		self.started = False
 
-	def set_path(self, track, target):
+	def pause(self):
 		self.observer.unschedule_all()
+
+	def set_path(self, track, target):		
 		self.event_handler.track_folder = track
 		self.event_handler.target_folder = target		
 		self.observer.schedule(self.event_handler, track)
@@ -62,6 +64,11 @@ class MyObserver:
 			self.observer.start()
 			self.started = True
 			self.event_handler.on_modified(None)
+
+	def set_suffixes(self, list):
+		global check_suffix
+		check_suffix = ['.'+s for s in list]
+		print(check_suffix)
 
 	def set_notification(self, func):
 		self.event_handler.set_notification(func)
