@@ -8,7 +8,7 @@ from pystray import Icon, Menu, MenuItem
 from plyer import notification
 from PIL import Image
 
-import filemove
+import filemove, setting
 
 global root, systray, track_display, target_display
 
@@ -23,24 +23,32 @@ root = None
 
 def browse_directory(mode):
 	path = filedialog.askdirectory()
+
+	if path == '': return
+
 	if mode == 'track':
 		global track_folder
-		track_folder = path
-		print("track changed")
+		track_folder = path		
 		track_display.config(text=path)
 	elif mode == 'target':
 		global target_folder
-		target_folder = path
-		print("target chanegd")
+		target_folder = path		
 		target_display.config(text=path)
 
 def on_apply(lb):
-	my_observer.pause()
-	my_observer.set_suffixes(lb.get(0, 'end'))
+	my_observer.pause()	
+
+	suffixes = lb.get(0, 'end')
+	my_observer.set_suffixes(suffixes)
 	my_observer.set_path(track_folder, target_folder)	
+
+	data = [track_folder, target_folder, suffixes]
+	setting.write_settings(data)
 
 def add_suffix(listbox, entry):
 	s = entry.get()
+	if ' ' in s: return
+
 	listbox.insert('end', s)
 	entry.delete(0, 'end')
 
@@ -161,6 +169,9 @@ def GUI():
 	root.mainloop()		
 
 if __name__ == "__main__":
+
+	prev_settings = setting.read_settings()
+
 	my_observer = filemove.MyObserver()
 	my_observer.set_notification(notify)
 	my_observer.set_path(track_folder, target_folder)	

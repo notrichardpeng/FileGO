@@ -67,8 +67,7 @@ class MyObserver:
 
 	def set_suffixes(self, list):
 		global check_suffix
-		check_suffix = ['.'+s for s in list]
-		print(check_suffix)
+		check_suffix = ['.'+s for s in list]		
 
 	def set_notification(self, func):
 		self.event_handler.set_notification(func)
