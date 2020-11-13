@@ -16,6 +16,7 @@ app_name = 'File Mover'
 
 track_folder = "C:/Users/notri/Downloads"
 target_folder = "C:/Users/notri/Desktop/School"	
+suffixes_from_setting = []
 
 root = None
 
@@ -118,14 +119,14 @@ def create_directory_settings(main_frame):
 	target_frame.pack(pady=5)	
 
 def create_list_of_suffixes(main_frame):
-	suffix_label = tkinter.Label(main_frame, text="Suffixes of files to check for:")
+	suffix_label = tkinter.Label(main_frame, text="Suffixes of files to check for (do not add '.' in front):")
 	suffix_label.pack()
 
 	suffix_frame = tkinter.Frame(main_frame)
 	suffix = tkinter.Listbox(suffix_frame, height=10, width=15, selectmode='extended')
-	suffix.insert(1, 'pdf')
-	suffix.insert(2, 'doc')
-	suffix.insert(3, 'docx')
+	
+	for s in suffixes_from_setting:
+		suffix.insert('end', s)
 
 	suffix_edit_frame = tkinter.Frame(suffix_frame)
 
@@ -157,11 +158,16 @@ def GUI():
 
 	main_frame.pack(anchor=tkinter.NW, fill=tkinter.X)
 	
-	confirm_setting = tkinter.Button(root, text="Apply", 
+	other_buttons = tkinter.Frame(root)
+	confirm_setting = tkinter.Button(other_buttons, text="Apply", 
 		command=lambda: on_apply(suffix_lb))
-	confirm_setting.pack(pady=5)
+	confirm_setting.pack(side=tkinter.LEFT, padx=5)
+	manual_check = tkinter.Button(other_buttons, text='Check', command=my_observer.check)
+	manual_check.pack(side=tkinter.LEFT, padx=5)
+	other_buttons.pack(pady=5)
 
-	working_text = tkinter.Label(root, text="checking for files to be moved...", 
+	working_text = tkinter.Label(root, text=
+		"checking for files to be moved...\nclick 'Check' if changes are not detected.", 
 		font="Helvetica 13 italic")
 	working_text.pack(pady=5)
 
@@ -171,11 +177,14 @@ def GUI():
 if __name__ == "__main__":
 
 	prev_settings = setting.read_settings()
+	track_folder = prev_settings[0]
+	target_folder = prev_settings[1]
+	suffixes_from_setting = prev_settings[2]
 
 	my_observer = filemove.MyObserver()
 	my_observer.set_notification(notify)
-	my_observer.set_path(track_folder, target_folder)	
-	my_observer.check()
+	my_observer.set_path(track_folder, target_folder)
+	my_observer.set_suffixes(suffixes_from_setting)		
 
 	GUI()		
 	

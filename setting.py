@@ -11,7 +11,7 @@ def write_settings(data):
 	
 	f.write(data[1] + '\n')
 	suffixes = ''
-	for s in data[2]: suffixes += s + ' '
+	for s in data[2]: suffixes += s + ' '	
 	f.write(suffixes)
 
 	f.close()
@@ -20,8 +20,19 @@ def read_settings():
 	f = open('settings.txt', 'r')
 
 	data = []
-	data.append(f.readline())
-	data.append(f.readline())
-	
+	line = f.readline()
+	line = line[:len(line)-1]
+	data.append(line)
+
+	line = f.readline()
+	line = line[:len(line)-1]
+	data.append(line)	
+
+	line = f.readline()	
+	suffixes_raw = line.split(' ')
+	suffixes = [s for s in suffixes_raw]
+	suffixes.pop(len(suffixes)-1)
+	data.append(suffixes)
 
 	f.close()
+	return data

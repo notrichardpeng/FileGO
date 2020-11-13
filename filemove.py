@@ -73,7 +73,7 @@ class MyObserver:
 		self.event_handler.set_notification(func)
 
 	#auto check folder at start of program
-	def check(self):
+	def check(self):		
 		self.event_handler.on_modified(None)
 
 
