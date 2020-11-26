@@ -2,12 +2,12 @@
 #Second line is target_folder
 #Third line are suffixes separated by space
 
-def write_settings(data):
-	f = open('settings.txt', 'w')
+def write_settings(path, data):
+	f = open(path, 'w+')
 	f.write(data[0] + '\n')
 	f.close()
 
-	f = open('settings.txt', 'a')
+	f = open(path, 'a')
 	
 	f.write(data[1] + '\n')
 	suffixes = ''
@@ -16,8 +16,14 @@ def write_settings(data):
 
 	f.close()
 
-def read_settings():
-	f = open('settings.txt', 'r')
+def read_settings(path):
+	try:	
+		f = open(path, 'r')
+	except Exception:
+		f = open(path, 'w+')
+		f.close()
+
+	f = open(path, 'r')
 
 	data = []
 	line = f.readline()

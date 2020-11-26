@@ -16,6 +16,7 @@ app_name = 'File Mover'
 
 track_folder = "C:/Users/notri/Downloads"
 target_folder = "C:/Users/notri/Desktop/School"	
+data_path = os.path.join(os.path.expanduser(os.getenv('USERPROFILE')), 'FileMover')
 suffixes_from_setting = []
 
 root = None
@@ -41,10 +42,11 @@ def on_apply(lb):
 
 	suffixes = lb.get(0, 'end')
 	my_observer.set_suffixes(suffixes)
-	my_observer.set_path(track_folder, target_folder)	
-
 	data = [track_folder, target_folder, suffixes]
-	setting.write_settings(data)
+	setting.write_settings(os.path.join(data_path, 'settings.txt'), data)
+
+	if track_folder.strip() != '' and target_folder.strip() != '':
+		my_observer.set_path(track_folder, target_folder)	
 
 def add_suffix(listbox, entry):
 	s = entry.get()
@@ -76,7 +78,7 @@ def on_close():
 	global systray
 
 	my_menu = Menu(MenuItem("Open", open_window), MenuItem("Quit", quit_program))
-	systray = Icon('File Mover', Image.open(sys.path[0] + "\\icon.ico"), menu=my_menu)																
+	systray = Icon('File Mover', Image.open(resource_path('icon.ico')), menu=my_menu)																
 	systray.run()		
 
 def notify(count):	
@@ -84,11 +86,19 @@ def notify(count):
 		title = "File Mover",
 		message = str(count) + " files has been successfully moved!",
 		timeout = 3,
-		app_icon = sys.path[0] + "\\icon.ico",
+		app_icon = resource_path("icon.ico"),
 		app_name = app_name
 	)
 
 #GUI--------------------------------------------------------------------------------------------
+
+def resource_path(relative_path):
+	try:        
+		base_path = sys._MEIPASS
+	except Exception:
+		base_path = os.path.abspath(".")
+	
+	return os.path.join(base_path, relative_path)
 
 def create_directory_settings(main_frame):
 	global track_display, target_display
@@ -150,8 +160,9 @@ def GUI():
 	root = tkinter.Tk()	
 	root.geometry('400x450')
 	root.title(app_name)
-	root.iconbitmap(sys.path[0] + "\\icon.ico")			
 
+	root.iconbitmap(resource_path("icon.ico"))
+	
 	main_frame = tkinter.Frame(root, bd=2, relief=tkinter.GROOVE)
 	create_directory_settings(main_frame)
 	suffix_lb = create_list_of_suffixes(main_frame)
@@ -176,15 +187,21 @@ def GUI():
 
 if __name__ == "__main__":
 
-	prev_settings = setting.read_settings()
+	if not os.path.exists(data_path):
+		os.makedirs(data_path)
+
+	prev_settings = setting.read_settings(os.path.join(data_path, 'settings.txt'))
+
 	track_folder = prev_settings[0]
 	target_folder = prev_settings[1]
 	suffixes_from_setting = prev_settings[2]
 
 	my_observer = filemove.MyObserver()
 	my_observer.set_notification(notify)
-	my_observer.set_path(track_folder, target_folder)
 	my_observer.set_suffixes(suffixes_from_setting)		
+
+	if track_folder.strip() != '' and target_folder.strip() != '':
+		my_observer.set_path(track_folder, target_folder)
 
 	GUI()		
 	
