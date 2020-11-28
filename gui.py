@@ -12,11 +12,11 @@ import filemove, setting
 
 global root, systray, track_display, target_display
 
-app_name = 'File Mover'
+app_name = 'File GO'
 
-track_folder = "C:/Users/notri/Downloads"
-target_folder = "C:/Users/notri/Desktop/School"	
-data_path = os.path.join(os.path.expanduser(os.getenv('USERPROFILE')), 'FileMover')
+track_folder = ""
+target_folder = ""	
+data_path = os.path.join(os.path.expanduser(os.getenv('USERPROFILE')), 'FileGO')
 suffixes_from_setting = []
 
 root = None
@@ -39,6 +39,9 @@ def browse_directory(mode):
 
 def on_apply(lb):
 	my_observer.pause()	
+
+	if not os.path.exists(data_path):
+		os.makedirs(data_path)
 
 	suffixes = lb.get(0, 'end')
 	my_observer.set_suffixes(suffixes)
@@ -78,12 +81,12 @@ def on_close():
 	global systray
 
 	my_menu = Menu(MenuItem("Open", open_window), MenuItem("Quit", quit_program))
-	systray = Icon('File Mover', Image.open(resource_path('icon.ico')), menu=my_menu)																
+	systray = Icon(app_name, Image.open(resource_path('icon.ico')), menu=my_menu)																
 	systray.run()		
 
 def notify(count):	
 	notification.notify(
-		title = "File Mover",
+		title = app_name,
 		message = str(count) + " files has been successfully moved!",
 		timeout = 3,
 		app_icon = resource_path("icon.ico"),
@@ -205,5 +208,4 @@ if __name__ == "__main__":
 
 	GUI()		
 	
-#cd Desktop\Programming\Python\FileMover
 

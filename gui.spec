@@ -26,11 +26,11 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='gui',
+          name='FileGO',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True , icon='icon.ico')
+          console=False , icon='icon.ico')

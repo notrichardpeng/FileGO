@@ -1,11 +1,10 @@
 import os
 import sys
-import threading
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-check_suffix = ['.pdf', '.doc', '.docx']
+check_suffix = []
 
 class Handler(FileSystemEventHandler):
 	
@@ -76,6 +75,4 @@ class MyObserver:
 	def check(self):		
 		self.event_handler.on_modified(None)
 
-
-#cd Desktop\Programming\Python\FileMover
 		
