@@ -16,7 +16,7 @@ You can define:
 <br>
 <br>
 <br>
-<img src="Images/uishot.png" width=390 height=465>
+
 <br>
 <br>
 
