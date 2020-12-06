@@ -1,5 +1,6 @@
 import sys
 import os
+import atexit
 
 import tkinter
 from tkinter import filedialog
@@ -69,7 +70,11 @@ def del_suffix(listbox):
 
 def quit_program():		
 	systray.stop()
-	root.destroy()				
+	global root
+	if root: 
+		root.destroy()				
+		root = None
+		
 
 def open_window():
 	systray.stop()
@@ -82,7 +87,7 @@ def on_close():
 
 	my_menu = Menu(MenuItem("Open", open_window), MenuItem("Quit", quit_program))
 	systray = Icon(app_name, Image.open(resource_path('icon.ico')), menu=my_menu)																
-	systray.run()		
+	systray.run()			
 
 def notify(count):	
 	notification.notify(
@@ -100,7 +105,7 @@ def resource_path(relative_path):
 		base_path = sys._MEIPASS
 	except Exception:
 		base_path = os.path.abspath(".")
-	
+		
 	return os.path.join(base_path, relative_path)
 
 def create_directory_settings(main_frame):
@@ -192,6 +197,8 @@ if __name__ == "__main__":
 
 	if not os.path.exists(data_path):
 		os.makedirs(data_path)
+
+	atexit.register(quit_program)
 
 	prev_settings = setting.read_settings(os.path.join(data_path, 'settings.txt'))
 
