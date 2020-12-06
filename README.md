@@ -8,6 +8,10 @@ FileGO is a Windows 10 system tray program that automatically detects and moves 
 <br>
 <br>
 
+The program runs in the background and constantly checks for specific files in a specific folder, <br>
+and then moves them to another folder you would like.
+<br>
+<br>
 You can define:
 * Suffixes: The suffixes of the files which FileGO should care about
 * Track folder: The directory where FileGO checks for new files added to the folder, and if their suffixes matches the ones that are defined.
@@ -16,7 +20,7 @@ You can define:
 <br>
 <br>
 <br>
-
+<img src="Images/uishot.png" width=328 height=392>
 <br>
 <br>
 
