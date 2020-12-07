@@ -38,7 +38,7 @@ class Handler(FileSystemEventHandler):
 			count += 1
 
 		if count > 0:
-			self.notify_callback(count)
+			self.notify_callback()
 	
 
 class MyObserver:

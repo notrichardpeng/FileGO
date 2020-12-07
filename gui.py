@@ -1,17 +1,15 @@
 import sys
 import os
-import atexit
 
 import tkinter
 from tkinter import filedialog
 
 from pystray import Icon, Menu, MenuItem
-from plyer import notification
 from PIL import Image
 
 import filemove, setting
 
-global root, systray, track_display, target_display
+global root, systray, track_display, target_display, tray_running
 
 app_name = 'File GO'
 
@@ -19,8 +17,8 @@ track_folder = ""
 target_folder = ""	
 data_path = os.path.join(os.path.expanduser(os.getenv('USERPROFILE')), 'FileGO')
 suffixes_from_setting = []
-
 root = None
+tray_running = False
 
 #Button functions--------------------------------------------------------------------------------------------
 
@@ -70,6 +68,7 @@ def del_suffix(listbox):
 
 def quit_program():		
 	systray.stop()
+	tray_running = False
 	global root
 	if root: 
 		root.destroy()				
@@ -78,25 +77,23 @@ def quit_program():
 
 def open_window():
 	systray.stop()
+	tray_running = False
 	root.after(0, root.deiconify)
 
 def on_close():			
 	root.withdraw()	
 
-	global systray
+	global systray, tray_running
 
 	my_menu = Menu(MenuItem("Open", open_window), MenuItem("Quit", quit_program))
 	systray = Icon(app_name, Image.open(resource_path('icon.ico')), menu=my_menu)																
+	tray_running = True	
 	systray.run()			
 
-def notify(count):	
-	notification.notify(
-		title = app_name,
-		message = str(count) + " files has been successfully moved!",
-		timeout = 3,
-		app_icon = resource_path("icon.ico"),
-		app_name = app_name
-	)
+def notify():				
+	if tray_running: 
+		systray.notify("New files has been successfully moved!", title=app_name)			
+
 
 #GUI--------------------------------------------------------------------------------------------
 
@@ -197,8 +194,6 @@ if __name__ == "__main__":
 
 	if not os.path.exists(data_path):
 		os.makedirs(data_path)
-
-	atexit.register(quit_program)
 
 	prev_settings = setting.read_settings(os.path.join(data_path, 'settings.txt'))
 
